@@ -2,7 +2,7 @@
   "name": "vsc-extension-termennetwerk",
   "displayName": "Termennetwerk",
   "description": "Zoeken in gemeenschappelijke thesauri, classificatiesystemen en referentielijsten.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "engines": {
     "vscode": "^1.80.0"
   },
