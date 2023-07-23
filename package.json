@@ -1,0 +1,127 @@
+{
+  "name": "vsc-extension-termennetwerk",
+  "displayName": "Termennetwerk",
+  "description": "Zoeken in gemeenschappelijke thesauri, classificatiesystemen en referentielijsten.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "author": {
+    "name": "Mark Lindeman",
+    "email": "mark.lindeman@triply.cc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mightymax/vsc-extension-termennetwerk"
+  },
+  "icon": "static/icon.png",
+  "license": "EUPL-1.2",
+  "publisher": "MarkLindeman",
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "termennetwerk.lookup",
+        "title": "Termennetwerk"
+      }
+    ],
+    "configuration": [
+      {
+        "id": "termennetwerk",
+        "title": "Termennetwerk settings",
+        "properties": {
+          "conf.settingsEditor.termennetwerk.allowMultiple": {
+            "type": "boolean",
+            "order": 2,
+            "description": "Sta toe dat er meerdere terminologiebronnen geslecteerd kunnen worden.",
+            "default": true
+          },
+          "conf.settingsEditor.termennetwerk.createGraph": {
+            "type": "boolean",
+            "order": 3,
+            "description": "Gebruik het resultaat om het hele concept te gebruiken, zet uit om alleen de Iri te gebruiken.",
+            "default": true
+          },
+          "conf.settingsEditor.termennetwerk.prefLabel": {
+            "type": "boolean",
+            "order": 4,
+            "description": "Gebruik skos:prefLabel in het resultaat.",
+            "default": true
+          },
+          "conf.settingsEditor.termennetwerk.scopeNote": {
+            "type": "boolean",
+            "order": 5,
+            "description": "Gebruik skos:scopeNote in het resultaat.",
+            "default": true
+          },
+          "conf.settingsEditor.termennetwerk.altLabel": {
+            "type": "boolean",
+            "order": 6,
+            "description": "Gebruik skos:altLabel in het resultaat.",
+            "default": true
+          },
+          "conf.settingsEditor.termennetwerk.hiddenLabel": {
+            "type": "boolean",
+            "order": 6,
+            "description": "Gebruik skos:hiddenLabel in het resultaat.",
+            "default": true
+          },
+          "conf.settingsEditor.termennetwerk.seeAlso": {
+            "type": "boolean",
+            "order": 7,
+            "description": "Gebruik owl:seeAlso in het resultaat.",
+            "default": true
+          },
+          "conf.settingsEditor.termennetwerk.broader": {
+            "type": "boolean",
+            "order": 8,
+            "description": "Gebruik skos:broader in het resultaat.",
+            "default": true
+          },
+          "conf.settingsEditor.termennetwerk.narrower": {
+            "type": "boolean",
+            "order": 9,
+            "description": "Gebruik skos:narrower in het resultaat.",
+            "default": true
+          },
+          "conf.settingsEditor.termennetwerk.related": {
+            "type": "boolean",
+            "order": 10,
+            "description": "Gebruik skos:related in het resultaat.",
+            "default": true
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "20.2.5",
+    "@types/vscode": "^1.80.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.8",
+    "@typescript-eslint/parser": "^5.59.8",
+    "@vscode/test-electron": "^2.3.2",
+    "eslint": "^8.41.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.1.3"
+  },
+  "dependencies": {
+    "@netwerk-digitaal-erfgoed/network-of-terms-catalog": "^6.25.5",
+    "axios": "^1.4.0",
+    "n3": "^1.17.0"
+  }
+}
