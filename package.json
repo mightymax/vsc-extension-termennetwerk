@@ -21,7 +21,7 @@
   "license": "EUPL-1.2",
   "publisher": "MarkLindeman",
   "activationEvents": [],
-  "main": "./out/extension.js",
+  "main": "./out/main.js",
   "contributes": {
     "commands": [
       {
