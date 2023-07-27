@@ -89,8 +89,11 @@ export default (zoekwoorden: string, results: Resultaat[]) => {
         case 'markdown':
           snippet = markdown(zoekwoorden, selectedItems, languageId);
           break;
+        case 'sparql':
+          snippet = sparql(selectedItems, languageId);
+          break;
         default:
-          vscode.window.showInformationMessage(`Geen snippets beschikbaar voor documenttype '${languageId}'`);
+          vscode.window.showWarningMessage(`Geen snippets beschikbaar voor documenttype '${languageId}'`);
           snippet = markdown(zoekwoorden, selectedItems, languageId);
           break;
       }
@@ -162,93 +165,65 @@ const prefixer = {
   a: 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
 };
 
+const sparql = (selectedItems: Readonly<vscode.QuickPickItem[]>, languageId: string) => {
+  let sparql = '';
+  let i = 1;
+  selectedItems.forEach(selectedItem => {
+    // @ts-expect-error 'term' does exsists but we have added it
+    const term = selectedItem.term as Term;
+    if (config('gebruikAlleenIri')) {
+      sparql += `\n<${term.uri}>`;
+      if (config('prefLabelAlsCommentaar')) {
+        sparql += ` # ${comments(term.prefLabel)}`;
+      }
+    } else {
+      sparql += `\nbind(<${term.uri}> as ?term${i})`;
+    }
+    i++;
+  });
+  return sparql;
+};
+
 const ntriples = (selectedItems: Readonly<vscode.QuickPickItem[]>, languageId: string) => {
   let triples = '';
   selectedItems.forEach(selectedItem => {
-    // @ts-ignore
+    // @ts-expect-error 'term' does exsists but we have added it
     const term = selectedItem.term as Term;
-    if (!config('createGraph')) {
-      triples += `\n[] <${prefixer.owl('seeAlso')}> <${term.uri}> .`;
+    if (config('gebruikAlleenIri')) {
+      triples += `\n<${term.uri}>`;
+      if (config('prefLabelAlsCommentaar')) {
+        triples += ` # ${comments(term.prefLabel)}`;
+      }
     } else {
-      triples += `<${term.uri}> ${prefixer.a} ${prefixer.skos('Concept')} .`
-      if (config('prefLabel') && term.prefLabel.length) {
-        triples += term.prefLabel.map(literal => `\n<${term.uri}> <${prefixer.skos('prefLabel')}> ${DataFactory.literal(literal).value} .`)
+      triples += `\n[] <${prefixer.owl('seeAlso')}> <${term.uri}> .`;
+      triples += `\n<${term.uri}> ${prefixer.a} ${prefixer.skos('Concept')} .`;
+      triples += term.prefLabel.map(literal => `\n<${term.uri}> <${prefixer.skos('prefLabel')}> ${DataFactory.literal(literal).value} .`)
           .join('');
-      }
-      if (config('scopeNote') && term.scopeNote.length) {
-        triples += term.scopeNote.map(literal => `\n<${term.uri}> <${prefixer.skos('scopeNote')}> ${DataFactory.literal(literal).value} .`)
-          .join('');
-      }
-      if (config('altLabel') && term.altLabel.length) {
-        triples += term.altLabel.map(literal => `\n<${term.uri}> <${prefixer.skos('altLabel')}> ${DataFactory.literal(literal).value} .`)
-          .join('');
-      }
-      if (config('hiddenLabel') && term.hiddenLabel.length) {
-        triples += term.hiddenLabel.map(literal => `\n<${term.uri}> <${prefixer.skos('hiddenLabel')}> ${DataFactory.literal(literal).value} .`)
-          .join('');
-      }
-      if (config('seeAlso') && term.seeAlso.length) {
-        triples += term.seeAlso.map(uri => `\n<${term.uri}> <${prefixer.skos('seeAlso')}> <${uri}> .`)
-          .join('');
-      }
-      if (config('broader') && term.broader.length) {
-        triples += term.broader.map(uri => `\n<${term.uri}> <${prefixer.skos('broader')}> <${uri.uri}> .\n <${uri.uri}> <${prefixer.skos('prefLabel')}>  ${DataFactory.literal(uri.prefLabel.pop() ?? '[no prefLabel]').value} .`)
-          .join('');
-      }
-      if (config('narrower') && term.narrower.length) {
-        triples += term.narrower.map(uri => `\n<${term.uri}> <${prefixer.skos('narrower')}> <${uri.uri}> .\n <${uri.uri}> <${prefixer.skos('prefLabel')}>  ${DataFactory.literal(uri.prefLabel.pop() ?? '[no prefLabel]').value} .`)
-          .join('');
-      }
-      if (config('related') && term.related.length) {
-        triples += term.related.map(uri => `\n<${term.uri}> <${prefixer.skos('related')}> <${uri.uri}> .\n <${uri.uri}> <${prefixer.skos('prefLabel')}>  ${DataFactory.literal(uri.prefLabel.pop() ?? '[no prefLabel]').value} .`)
-          .join('');
-      }
-      triples += `\n`;
     }
+
   });
   return triples;
-}
+};
 
-const iris = (iris: string[]) => iris.map(iri => `<${iri}>`).join(', ');
-const uris = (uris: ExtraTerms) => uris.map(uri => `<${uri.uri}>`).join(', ') ;
 const literals = (literals: string[]) => literals.map(literal => `"${DataFactory.literal(literal).value}"`).join(', ');
+const comments = (literals: string[]) => literals.map(literal => `${DataFactory.literal(literal).value}`).join(' | ');
 
 const turtle = (selectedItems: Readonly<vscode.QuickPickItem[]>) => {
   let turtle = '';
   selectedItems.forEach(selectedItem => {
     // @ts-ignore
     const term = selectedItem.term as Term;
-    if (!config('createGraph')) {
-      turtle += `<${term.uri}>`;
+    if (config('gebruikAlleenIri')) {
+      turtle += `\n<${term.uri}>`;
+      if (config('prefLabelAlsCommentaar')) {
+        turtle += ` # ${comments(term.prefLabel)}`;
+      }
     } else {
-      turtle += `<${term.uri}> a skos:Concept ;`
-      if (config('prefLabel') && term.prefLabel.length) {
-          turtle += `\n  skos:prefLabel ${literals(term.prefLabel)} ;` ;
-      }
-      if (config('scopeNote') && term.scopeNote.length) {
-        turtle += `\n  skos:scopeNote ${literals(term.scopeNote)} ;`;
-      }
-      if (config('altLabel') && term.altLabel.length) {
-        turtle += `\n  skos:altLabel ${literals(term.altLabel)}`;
-      }
-      if (config('hiddenLabel') && term.hiddenLabel.length) {
-        turtle += `\n  skos:hiddenLabel ${literals(term.hiddenLabel)} ;`;
-      }
-      if (config('seeAlso') && term.seeAlso.length) {
-        turtle += `\n  owl:seeAlso ${iris(term.seeAlso)} ;`;
-      }
-      if (config('broader') && term.broader.length) {
-        turtle += `\n  skos:broader ${uris(term.broader)} ;`;
-      }
-      if (config('narrower') && term.narrower.length) {
-        turtle += `\n  skos:narrower ${uris(term.narrower)} ;`;
-      }
-      if (config('related') && term.related.length) {
-        turtle += `\n  skos:related ${uris(term.related)} ;`;
-      }
-      turtle += `\n.\n`;
+      turtle += `<${term.uri}> a skos:Concept ;`;
+      turtle += `\n  skos:prefLabel ${literals(term.prefLabel)} .\n` ;
     }
-  })
+
+  });
 
   return turtle ;
 };

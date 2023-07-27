@@ -34,65 +34,23 @@
         "id": "termennetwerk",
         "title": "Termennetwerk settings",
         "properties": {
-          "conf.settingsEditor.termennetwerk.allowMultiple": {
+          "conf.settingsEditor.termennetwerk.meerdereBronnenToestaan": {
             "type": "boolean",
             "order": 2,
-            "description": "Sta toe dat er meerdere terminologiebronnen geslecteerd kunnen worden.",
+            "description": "Sta toe dat er meerdere terminologiebronnen geselecteerd kunnen worden.",
             "default": true
           },
-          "conf.settingsEditor.termennetwerk.createGraph": {
-            "type": "boolean",
-            "order": 3,
-            "description": "Gebruik het resultaat om het hele concept te gebruiken, zet uit om alleen de Iri te gebruiken.",
-            "default": true
-          },
-          "conf.settingsEditor.termennetwerk.prefLabel": {
-            "type": "boolean",
-            "order": 4,
-            "description": "Gebruik skos:prefLabel in het resultaat.",
-            "default": true
-          },
-          "conf.settingsEditor.termennetwerk.scopeNote": {
-            "type": "boolean",
-            "order": 5,
-            "description": "Gebruik skos:scopeNote in het resultaat.",
-            "default": true
-          },
-          "conf.settingsEditor.termennetwerk.altLabel": {
-            "type": "boolean",
-            "order": 6,
-            "description": "Gebruik skos:altLabel in het resultaat.",
-            "default": true
-          },
-          "conf.settingsEditor.termennetwerk.hiddenLabel": {
-            "type": "boolean",
-            "order": 6,
-            "description": "Gebruik skos:hiddenLabel in het resultaat.",
-            "default": true
-          },
-          "conf.settingsEditor.termennetwerk.seeAlso": {
-            "type": "boolean",
-            "order": 7,
-            "description": "Gebruik owl:seeAlso in het resultaat.",
-            "default": true
-          },
-          "conf.settingsEditor.termennetwerk.broader": {
-            "type": "boolean",
-            "order": 8,
-            "description": "Gebruik skos:broader in het resultaat.",
-            "default": true
-          },
-          "conf.settingsEditor.termennetwerk.narrower": {
-            "type": "boolean",
-            "order": 9,
-            "description": "Gebruik skos:narrower in het resultaat.",
-            "default": true
-          },
-          "conf.settingsEditor.termennetwerk.related": {
+          "conf.settingsEditor.termennetwerk.gebruikAlleenIri": {
             "type": "boolean",
             "order": 10,
-            "description": "Gebruik skos:related in het resultaat.",
-            "default": true
+            "description": "Gebruik alleen de Iri uit resultaat.",
+            "default": false
+          },
+          "conf.settingsEditor.termennetwerk.prefLabelAlsCommentaar": {
+            "type": "boolean",
+            "order": 10,
+            "description": "Voeg het skos:prefLabel toe als commentaar (alleen als \"gebruik alleen Iri\" aan staat).",
+            "default": false
           }
         }
       }

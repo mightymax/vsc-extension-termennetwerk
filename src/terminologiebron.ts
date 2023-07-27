@@ -12,7 +12,7 @@ export default (sources: Source[]) => {
   const picker = vscode.window.createQuickPick();
   picker.matchOnDescription = true;
   picker.matchOnDetail = true;
-  picker.canSelectMany = vscode.workspace.getConfiguration().get('conf.settingsEditor.termennetwerk.allowMultiple') ?? true;
+  picker.canSelectMany = vscode.workspace.getConfiguration().get('conf.settingsEditor.termennetwerk.meerdereBronnenToestaan') ?? true;
   picker.title = picker.canSelectMany ? 'Selecteer één of meerdere terminologiebronnen:' : 'Selecteen een terminologiebron';
   picker.onDidHide(() => picker.dispose());
   picker.items = sources.map(source => {
